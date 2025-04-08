@@ -1,6 +1,6 @@
 package pcd.ass01;
 
-import pcd.ass01.workers.BoidsUpdater;
+import pcd.ass01.workers.UpdaterService;
 
 import java.util.Optional;
 
@@ -8,7 +8,7 @@ public class BoidsSimulator {
 
     private static final int FRAMERATE = 25;
 
-    private final BoidsUpdater boidsUpdater;
+    private final UpdaterService updaterService;
 
     private BoidsModel model;
     private int framerate;
@@ -18,7 +18,7 @@ public class BoidsSimulator {
     public BoidsSimulator(BoidsModel model) {
         this.model = model;
         view = Optional.empty();
-        this.boidsUpdater = new BoidsUpdater();
+        this.updaterService = new UpdaterService();
     }
 
     public void attachView(BoidsView view) {
@@ -31,7 +31,7 @@ public class BoidsSimulator {
             if (!model.isModelPaused()) { // Se il modello NON è in pausa, aggiorna la simulazione
                 long t0 = System.currentTimeMillis();
 
-                boidsUpdater.update(model);
+                updaterService.compute(model);
 
                 if (view.isPresent()) {
                     view.get().update(framerate);
@@ -42,9 +42,11 @@ public class BoidsSimulator {
     }
 
     private void regulateFramerate(long t0) {
+        var framratePeriod = 1000 / FRAMERATE;
         long t1 = System.currentTimeMillis();
         var dtElapsed = t1 - t0;
-        var framratePeriod = 1000 / FRAMERATE;
+
+        System.out.println("dtElapsed: " + dtElapsed);
 
         if (dtElapsed < framratePeriod) {
             try {

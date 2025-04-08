@@ -1,4 +1,24 @@
 package pcd.ass01.workers;
 
-public class ReadTask {
+import pcd.ass01.Boid;
+import pcd.ass01.BoidsModel;
+
+import java.util.concurrent.Callable;
+
+public class ReadTask implements Callable<Void> {
+
+    private final Boid boid;
+    private final BoidsModel model;
+
+    ReadTask(final Boid boid, BoidsModel model){
+        this.boid = boid;
+        this.model = model;
+    }
+
+    @Override
+    public Void call() {
+        this.boid.readNearbyBoids(this.model);
+        return null;
+    }
+
 }
