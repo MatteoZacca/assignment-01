@@ -1,17 +1,18 @@
 package pcd.ass01.workers;
 
 import pcd.ass01.BoidsModel;
+import pcd.ass01.Boid;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class UpdaterService {
+public class BoidsUpdateExecutor {
     private ExecutorService executor;
     private int numTasks;
 
 
-    public UpdaterService() {
+    public BoidsUpdateExecutor() {
         this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
     }
 
@@ -21,14 +22,16 @@ public class UpdaterService {
         List<Future<Void>> reads = new LinkedList<>();
 
         for (int taskIndex = 0; taskIndex < this.numTasks; taskIndex++) {
-            var boid = model.getBoids().get(taskIndex);
+            Boid boid = model.getBoids().get(taskIndex);
             Future<Void> res = executor.submit(new ReadTask(boid, model));
             reads.add(res);
         }
 
-        reads.forEach(it -> {
+        reads.forEach(readFuture -> {
             try {
-                it.get();
+                readFuture.get(); // chiamando get() su ogni Future, il codice si assicura che
+                // tutti i task di lettura siano completati prima di procedere alla fase
+                // successiva
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
@@ -38,16 +41,15 @@ public class UpdaterService {
 
         List<Future<Void>> writes = new LinkedList<>();
 
-
         for (int taskIndex = 0; taskIndex < this.numTasks; taskIndex++) {
-            var boid = model.getBoids().get(taskIndex);
+            Boid boid = model.getBoids().get(taskIndex);
             Future<Void> res = executor.submit(new WriteTask(boid, model));
             writes.add(res);
         }
 
-        writes.forEach(it -> {
+        writes.forEach(writeFuture -> {
             try {
-                it.get();
+                writeFuture.get();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {

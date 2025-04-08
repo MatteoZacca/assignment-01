@@ -6,8 +6,10 @@ import pcd.ass01.BoidsModel;
 import java.util.concurrent.Callable;
 
 public class WriteTask implements Callable<Void> {
+
     private final Boid boid;
     private final BoidsModel model;
+
     public WriteTask(Boid boid, BoidsModel model) {
         this.boid = boid;
         this.model = model;

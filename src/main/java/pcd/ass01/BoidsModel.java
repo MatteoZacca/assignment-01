@@ -107,8 +107,8 @@ public class BoidsModel {
     	return perceptionRadius;
     }
 
-    public synchronized void toggleSimulationPause() {
-        this.isModelPaused = !this.isModelPaused;
+    public synchronized void setSimulationStatus(boolean status) {
+        this.isModelPaused = status;
     }
 
     public synchronized boolean isModelPaused() {
@@ -120,7 +120,7 @@ public class BoidsModel {
         - posizione iniziale casuale all'interno dei limiti definiti dalla larghezza e
         dall'altezza dell'ambiente simulato
         - velocità iniziale casuale */
-    private void generateBoids(int nboids) {
+    public synchronized void generateBoids(int nboids) {
         boids = new ArrayList<>();
         for (int i = 0; i < nboids; i++) {
             boids.add(createBoid(i));
