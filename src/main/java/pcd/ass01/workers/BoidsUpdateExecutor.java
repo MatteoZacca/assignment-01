@@ -32,9 +32,7 @@ public class BoidsUpdateExecutor {
                 readFuture.get(); // chiamando get() su ogni Future, il codice si assicura che
                 // tutti i task di lettura siano completati prima di procedere alla fase
                 // successiva
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -50,9 +48,7 @@ public class BoidsUpdateExecutor {
         writes.forEach(writeFuture -> {
             try {
                 writeFuture.get();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
         });

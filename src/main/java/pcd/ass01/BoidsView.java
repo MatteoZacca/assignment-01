@@ -14,72 +14,73 @@ public class BoidsView implements ChangeListener {
 	private JSlider cohesionSlider, separationSlider, alignmentSlider, boidSlider;
 	private BoidsModel model;
 	private int width, height;
-	
+
 	public BoidsView(BoidsModel model, int width, int height) {
 		this.model = model;
 		this.width = width;
 		this.height = height;
-		
+
 		frame = new JFrame("Boids Simulation");
-        frame.setSize(width, height);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(width, height);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel cp = new JPanel();
 		LayoutManager layout = new BorderLayout();
 		cp.setLayout(layout);
 
-        boidsPanel = new BoidsPanel(this, model);
+		boidsPanel = new BoidsPanel(this, model);
 		cp.add(BorderLayout.CENTER, boidsPanel);
 
-        JPanel slidersPanel = new JPanel();
+		JPanel slidersPanel = new JPanel();
 
 		slidersPanel.setLayout(new GridLayout(2, 2));
-        
-        cohesionSlider = makeSlider();
-        separationSlider = makeSlider();
-        alignmentSlider = makeSlider();
+
+		cohesionSlider = makeSlider();
+		separationSlider = makeSlider();
+		alignmentSlider = makeSlider();
 		boidSlider = makeBoidSlider();
-        
-        slidersPanel.add(new JLabel("Separation"));
-        slidersPanel.add(separationSlider);
-        slidersPanel.add(new JLabel("Alignment"));
-        slidersPanel.add(alignmentSlider);
-        slidersPanel.add(new JLabel("Cohesion"));
-        slidersPanel.add(cohesionSlider);
+
+		slidersPanel.add(new JLabel("Separation"));
+		slidersPanel.add(separationSlider);
+		slidersPanel.add(new JLabel("Alignment"));
+		slidersPanel.add(alignmentSlider);
+		slidersPanel.add(new JLabel("Cohesion"));
+		slidersPanel.add(cohesionSlider);
 		slidersPanel.add(new JLabel("N°. Boids"));
 		slidersPanel.add(boidSlider);
 
 		cp.add(BorderLayout.SOUTH, slidersPanel);
 
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(1,2));
+		buttonPanel.setLayout(new GridLayout(1, 2));
 
-		JButton setSimulation = new JButton("Play");
-		setSimulation.addActionListener((e) -> {
-			model.setSimulationStatus(!model.isModelPaused());
-			setSimulation.setText(model.isModelPaused() ? "Play" : "Pause");
+		JButton toggleSimulation = new JButton("Play");
+		toggleSimulation.addActionListener((e) -> {
+			model.setStatusSimulation(!model.isModelPaused());
+			toggleSimulation.setText(model.isModelPaused() ? "Play" : "Pause");
 		});
-		        
-		cp.add(BorderLayout.NORTH, setSimulation);
-		buttonPanel.add(setSimulation);
+
+		cp.add(BorderLayout.NORTH, toggleSimulation);
+		buttonPanel.add(toggleSimulation);
 
 		JButton startStopSimulation = new JButton("Reset");
 		startStopSimulation.addActionListener((e) -> {
-			model.setSimulationStatus(true);
-			setSimulation.setText("Resume");
+			model.setStatusSimulation(true);
+			toggleSimulation.setText("Play");
 			model.generateBoids(model.getBoids().size());
 		} );
 
 		buttonPanel.add(startStopSimulation);
+
 		cp.add(BorderLayout.NORTH, buttonPanel);
 
-		frame.setContentPane(cp);	
-		
-        frame.setVisible(true);
+		frame.setContentPane(cp);
+
+		frame.setVisible(true);
 	}
 
 	private JSlider makeSlider() {
-		var slider = new JSlider(JSlider.HORIZONTAL, 0, 20, 10);        
+		var slider = new JSlider(JSlider.HORIZONTAL, 0, 20, 10);
 		slider.setMajorTickSpacing(10);
 		slider.setMinorTickSpacing(1);
 		slider.setPaintTicks(true);
@@ -90,7 +91,7 @@ public class BoidsView implements ChangeListener {
 		labelTable.put( 20, new JLabel("2") );
 		slider.setLabelTable( labelTable );
 		slider.setPaintLabels(true);
-        slider.addChangeListener(this);
+		slider.addChangeListener(this);
 		return slider;
 	}
 
@@ -109,7 +110,7 @@ public class BoidsView implements ChangeListener {
 		slider.addChangeListener(this);
 		return slider;
 	}
-	
+
 	public void update(int frameRate) {
 		boidsPanel.setFrameRate(frameRate);
 		boidsPanel.repaint();
@@ -131,7 +132,7 @@ public class BoidsView implements ChangeListener {
 			model.setBoidCount(BoidsSimulation.N_BOIDS + val * BoidsSimulation.N_BOIDS);
 		}
 	}
-	
+
 	public int getWidth() {
 		return width;
 	}

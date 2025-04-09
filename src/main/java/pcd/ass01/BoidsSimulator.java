@@ -31,11 +31,11 @@ public class BoidsSimulator {
             long t0 = System.currentTimeMillis();
             if (!model.isModelPaused()) { // Se il modello NON è in pausa, aggiorna la simulazione
                 boidsUpdateExecutor.compute(model);
-            }
 
-            if (view.isPresent()) {
-                view.get().update(framerate);
-                regulateFramerate(t0);
+                if (view.isPresent()) {
+                    view.get().update(framerate);
+                    regulateFramerate(t0);
+                }
             }
         }
     }
@@ -45,7 +45,7 @@ public class BoidsSimulator {
         long t1 = System.currentTimeMillis();
         var dtElapsed = t1 - t0;
 
-        System.out.println("dtElapsed: " + dtElapsed);
+        // System.out.println("dtElapsed: " + dtElapsed);
 
         if (dtElapsed < framratePeriod) {
             try {
