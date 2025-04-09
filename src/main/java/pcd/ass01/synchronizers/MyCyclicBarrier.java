@@ -14,8 +14,8 @@ public class MyCyclicBarrier {
         this.barrierReleased = false;
         this.currentThreads++;
 
-        System.out.println("[" + Thread.currentThread().getName() + "] entrato nella barriera: " +
-                "Posizione in coda: (" + getQueuePosition() + ")");
+        // System.out.println("[" + Thread.currentThread().getName() + "] entrato nella barriera: " +
+                // "Posizione in coda: (" + getQueuePosition() + ")");
 
         if (this.currentThreads == this.totalThreads) {
             this.barrierReleased = true;

@@ -10,7 +10,7 @@ import java.util.List;
 public class Agent extends Thread {
 
     private final int index;
-    private final int availableProcessors = Runtime.getRuntime().availableProcessors();
+    private final int availableProcessors ;
 
     private final MyCyclicBarrier startUpdateBarrier;
     private final MyCyclicBarrier endUpdateBarrier;
@@ -20,10 +20,12 @@ public class Agent extends Thread {
     private BoidsModel model;
 
 
-    public Agent (final int index, final MyCyclicBarrier startUpdateBarrier,
+    public Agent (final int index, final int threadCount, final MyCyclicBarrier startUpdateBarrier,
                   final MyCyclicBarrier endUpdateBarrier,
                   final MyCyclicBarrier readingDoneBarrier) {
         this.index = index;
+        this.availableProcessors = threadCount > 0 ? Math.min(threadCount, Runtime.getRuntime().availableProcessors())
+                : Runtime.getRuntime().availableProcessors();
         this.startUpdateBarrier = startUpdateBarrier;
         this.readingDoneBarrier = readingDoneBarrier;
         this.endUpdateBarrier = endUpdateBarrier;
@@ -58,49 +60,49 @@ public class Agent extends Thread {
 
     private void syncBeforeAgentsStart() {
         try {
-            log(": sincronizzo i thread con startUpdateBarrier");
+            //log(": sincronizzo i thread con startUpdateBarrier");
             this.startUpdateBarrier.await();
-            log(": startUpdateBarrier crolla");
+            //log(": startUpdateBarrier crolla");
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     private void readNearbyBoids() {
-        log(": inizia la fase di lettura");
+        //log(": inizia la fase di lettura");
         for (var boid: myBoids) {
             boid.readNearbyBoids(this.model);
         }
-        log(": termina la fase di lettura");
+        //log(": termina la fase di lettura");
     }
 
     private void syncReadingBeforeWriting() {
         try {
-            log(": sincronizzo i thread con readingDoneBarrier");
+            //log(": sincronizzo i thread con readingDoneBarrier");
             this.readingDoneBarrier.await();
-            log(": readingDoneBarrier crolla" );
+            //log(": readingDoneBarrier crolla" );
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     private void updateBoidsState() {
-        log(": inizia la fase di scrittura");
+        //log(": inizia la fase di scrittura");
         for(var boid: myBoids) {
             boid.updateVelocity(model);
             boid.updatePos(model);
         }
-        log(": termina la fase di scrittura");
+        //log(": termina la fase di scrittura");
     }
 
     private void syncBeforeAgentsEnd() {
-        log(": sincronizzo i thread con endUpdateBarrier");
+        //log(": sincronizzo i thread con endUpdateBarrier");
         try {
             this.endUpdateBarrier.await();
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
-        log(": endUpdateBarrier crolla");
+        //log(": endUpdateBarrier crolla");
     }
 
     private synchronized void log(String msg) {

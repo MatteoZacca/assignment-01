@@ -8,7 +8,7 @@ import java.util.List;
 
 public class BoidsUpdater {
 
-    private final int availableProcessors = Runtime.getRuntime().availableProcessors();
+    private final int availableProcessors;
 
     private final List<Agent> agents = new ArrayList<>();
 
@@ -16,7 +16,10 @@ public class BoidsUpdater {
     private final MyCyclicBarrier readingDoneBarrier;
     private final MyCyclicBarrier endUpdateBarrier;
 
-    public BoidsUpdater() {
+    public BoidsUpdater(int threadCount) {
+        availableProcessors = (threadCount > 0)
+                ? Math.min(threadCount, Runtime.getRuntime().availableProcessors())
+                : Runtime.getRuntime().availableProcessors();
 
         this.startUpdateBarrier = new MyCyclicBarrier(availableProcessors + 1);
         this.readingDoneBarrier = new MyCyclicBarrier(availableProcessors);
@@ -24,7 +27,7 @@ public class BoidsUpdater {
 
 
         for (int index = 0; index < availableProcessors; index++) {
-            Agent agent = new Agent(index, this.startUpdateBarrier, this.endUpdateBarrier, this.readingDoneBarrier);
+            Agent agent = new Agent(index, threadCount, this.startUpdateBarrier, this.endUpdateBarrier, this.readingDoneBarrier);
             agents.add(agent);
             agent.start();
         }
