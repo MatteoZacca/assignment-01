@@ -18,8 +18,8 @@ public class BoidsUpdater {
             Thread agent = Thread.ofVirtual().unstarted(() -> {
                 boid.readNearbyBoids(model);
             });
-            agent.start();
 
+            agent.start();
             readers.add(agent);
         }
 
