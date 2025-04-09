@@ -8,8 +8,7 @@ import java.util.ArrayList;
 
 public class BoidsUpdater {
 
-    public BoidsUpdater() {
-    }
+    public BoidsUpdater() {}
 
     public void update(BoidsModel model) {
         ArrayList<Thread> readers = new ArrayList<Thread>();
@@ -40,8 +39,8 @@ public class BoidsUpdater {
                 boid.updateVelocity(model);
                 boid.updatePos(model);
             });
-            agent.start();
 
+            agent.start();
             writers.add(agent);
         }
 
