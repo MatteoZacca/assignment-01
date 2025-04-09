@@ -40,19 +40,6 @@ public class BoidsModel {
         generateBoids(nboids);
     }
 
-
-    /* Il ciclo for riempie la lista di boids con un numero di boid specificato dalla
-        variabile nboids (1500). A ciascuno di questi viene assegnata:
-        - posizione iniziale casuale all'interno dei limiti definiti dalla larghezza e
-        dall'altezza dell'ambiente simulato
-        - velocità iniziale casuale */
-    public synchronized void generateBoids(int nboids) {
-        boids = new ArrayList<>();
-        for (int i = 0; i < nboids; i++) {
-            boids.add(createBoid(i));
-        }
-    }
-
     public synchronized List<Boid> getBoids() {
         return boids;
     }
@@ -129,18 +116,16 @@ public class BoidsModel {
         return this.isModelPaused;
     }
 
-    private Boid createBoid(int i) {
-        P2d pos;
-        V2d vel;
-
-        if (jpf) {
-            double fakeRandom = (double) (i % 100) / 100;
-            pos = new P2d(-width / 2 + fakeRandom / 2 * width, -height / 2 + fakeRandom / 3 * height);
-            vel = new V2d(fakeRandom / 4 * maxSpeed / 2 - maxSpeed / 4, fakeRandom / 5 * maxSpeed / 2 - maxSpeed / 4);
-        } else {
-            pos = new P2d(-width / 2 + Math.random() * width, -height / 2 + Math.random() * height);
-            vel = new V2d(Math.random() * maxSpeed / 2 - maxSpeed / 4, Math.random() * maxSpeed / 2 - maxSpeed / 4);
+    private void generateBoids(int nboids) {
+        boids = new ArrayList<>();
+        for (int i = 0; i < nboids; i++) {
+            boids.add(createBoid());
         }
+    }
+
+    private Boid createBoid() {
+        P2d pos = new P2d(-width / 2 + Math.random() * width, -height / 2 + Math.random() * height);
+        V2d vel = new V2d(Math.random() * maxSpeed / 2 - maxSpeed / 4, Math.random() * maxSpeed / 2 - maxSpeed / 4);
 
         return new Boid(pos, vel);
     }
